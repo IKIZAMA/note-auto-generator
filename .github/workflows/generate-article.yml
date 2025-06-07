@@ -26,7 +26,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        # --no-cache-dir オプションを追加してキャッシュを無効化し、強制的に再インストール
+        pip install --no-cache-dir -r requirements.txt
         
     - name: Generate article
       env:
