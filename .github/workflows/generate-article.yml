@@ -26,8 +26,10 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        # --no-cache-dir オプションを追加してキャッシュを無効化し、強制的に再インストール
-        pip install --no-cache-dir -r requirements.txt
+        # google-generativeaiライブラリを強制的に最新版にアップグレード
+        pip install --upgrade google-generativeai
+        # 他に必要なライブラリがあればここでインストール
+        # pip install -r requirements.txt # ← もし他にもライブラリがあればこの行は残す
         
     - name: Generate article
       env:
