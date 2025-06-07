@@ -10,7 +10,8 @@ class NoteArticleGenerator:
         
         # Gemini AI設定
         genai.configure(api_key=self.gemini_api_key)
-        self.model = genai.GenerativeModel('gemini-pro')
+        # モデル名をより安定した最新バージョン 'gemini-1.0-pro' に変更
+        self.model = genai.GenerativeModel('gemini-1.0-pro')
         
     def load_themes(self):
         """テーマファイルを読み込む"""
