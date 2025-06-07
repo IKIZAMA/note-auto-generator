@@ -10,6 +10,10 @@ jobs:
   generate-article:
     runs-on: ubuntu-latest
     
+    # 修正点：リポジトリへの書き込み権限を追加
+    permissions:
+      contents: write
+      
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -35,5 +39,10 @@ jobs:
         git config --local user.name "GitHub Action"
         git add generated_articles/
         git add src/used_themes.json
-        git diff --staged --quiet || git commit -m "Generate daily article $(date +'%Y-%m-%d')"
-        git push
+        # 変更があった場合のみコミットするように修正
+        if ! git diff --staged --quiet; then
+          git commit -m "Generate daily article $(date +'%Y-%m-%d')"
+          git push
+        else
+          echo "No changes to commit."
+        fi
