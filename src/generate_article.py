@@ -14,16 +14,36 @@ class NoteArticleGenerator:
         
     def load_themes(self):
         """テーマファイルを読み込む"""
-        with open('src/themes.json', 'r', encoding='utf-8') as f:
-            return json.load(f)
+        themes_file_path = 'src/themes.json'
+        try:
+            with open(themes_file_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except FileNotFoundError:
+            print(f"エラー: テーマファイル '{themes_file_path}' が見つかりません。")
+            exit(1)
+        except json.JSONDecodeError as e:
+            print(f"エラー: テーマファイル '{themes_file_path}' のJSON形式に誤りがあります。")
+            print(f"エラー箇所: 行 {e.lineno}, 列 {e.colno}")
+            print(f"エラー詳細: {e.msg}")
+            print("ファイルの内容が正しいJSON形式か確認してください。カンマの付け忘れや閉じ括弧の不足などが原因として考えられます。")
+            exit(1)
+
     
     def load_used_themes(self):
         """使用済みテーマを読み込む"""
+        used_themes_file_path = 'src/used_themes.json'
         try:
-            with open('src/used_themes.json', 'r', encoding='utf-8') as f:
+            with open(used_themes_file_path, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except FileNotFoundError:
+            # ファイルが存在しない場合は初期状態として扱う
             return {"used_theme_ids": []}
+        except json.JSONDecodeError as e:
+            print(f"エラー: 使用済みテーマファイル '{used_themes_file_path}' のJSON形式に誤りがあります。")
+            print(f"エラー箇所: 行 {e.lineno}, 列 {e.colno}")
+            print(f"エラー詳細: {e.msg}")
+            print("ファイルが空か、内容が破損している可能性があります。プログラムを終了します。")
+            exit(1)
     
     def save_used_themes(self, used_themes):
         """使用済みテーマを保存"""
@@ -43,9 +63,9 @@ class NoteArticleGenerator:
         
         # 全テーマを使い切った場合はリセット
         if not available_themes:
+            print("全テーマを使用完了。リセットしました。")
             used_themes['used_theme_ids'] = []
             available_themes = themes_data['themes']
-            print("全テーマを使用完了。リセットしました。")
         
         # ランダムに選択
         selected_theme = random.choice(available_themes)
